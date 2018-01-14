@@ -1,6 +1,6 @@
-var mongoose = require('mongoose');
-var config = require('../../configs/db');
-var gracefulShutdown;
+const mongoose = require('mongoose');
+const config = require('../../configs/db');
+let gracefulShutdown;
 
 mongoose.connect(config.dbURI, { useMongoClient: true });
 mongoose.Promise = global.Promise;

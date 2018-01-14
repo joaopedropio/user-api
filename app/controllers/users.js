@@ -1,5 +1,5 @@
-var mongoose = require('mongoose');
-var User = mongoose.model('User');
+const mongoose = require('mongoose');
+const User = mongoose.model('User');
 
 module.exports.listAll = (req, res) => {
     res.status(200);
@@ -20,7 +20,6 @@ module.exports.create = (req, res) => {
         salt: req.body.salt
     }, (err, user) => {
         if(err) {
-            var error = JSON.stringify(err);
             res.status(400);
             res.json(err);
         } else {

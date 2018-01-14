@@ -1,6 +1,6 @@
-var express = require('express');
-var ctrlUsers = require('../controllers/users');
-var router = express.Router();
+const express = require('express');
+const ctrlUsers = require('../controllers/users');
+const router = express.Router();
 
 // User Routes
 router.post('/', ctrlUsers.create)
