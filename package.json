@@ -1,0 +1,23 @@
+{
+    "name": "user-api",
+    "version": "1.0.0",
+    "description": "Api responsible for user data.",
+    "main": "app.js",
+    "scripts": {
+        "start": "node app.js"
+    },
+    "keywords": [
+        "socialmovie",
+        "users",
+        "node",
+        "express",
+        "structure"
+    ],
+    "author": "Joao Pedro",
+    "license": "MIT",
+    "dependencies": {
+        "body-parser": "^1.18.2",
+        "express": "^4.9.5",
+        "mongoose": "^4.13.9"
+    }
+}
