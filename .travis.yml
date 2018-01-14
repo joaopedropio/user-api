@@ -8,7 +8,5 @@ services:
 
 before_install:
   - docker build -t joaopio/user-api .
-  - docker run joaopio/user-api
-  - docker ps -a
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
   - docker push joaopio/user-api
