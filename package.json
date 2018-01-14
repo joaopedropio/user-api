@@ -13,6 +13,10 @@
         "express",
         "structure"
     ],
+    "repository" : {
+        "type" : "git",
+        "url" : "https://github.com/joaopedropio/user-api.git"
+    },
     "author": "Joao Pedro",
     "license": "MIT",
     "dependencies": {
