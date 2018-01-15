@@ -1,50 +1,57 @@
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
 
-module.exports.listAll = (req, res) => {
+exports.listAll = (req, res) => {
     res.status(200);
     User.find().lean().exec(function (err, users) {
         console.log(JSON.stringify(users));
-        return res.json(users);
+        res.json(users);
     });
 };
 
-module.exports.create = (req, res) => {
+exports.create = (req, res) => {
+    const {
+        name, address, phone, email, username, password, salt
+    } = req.body;
     User.create({
-        name: req.body.name,
-        address: req.body.address,
-        phone: req.body.phone,
-        email: req.body.email,
-        username: req.body.username,
-        password: req.body.password,
-        salt: req.body.salt
+        name: name,
+        address: address,
+        phone: phone,
+        email: email,
+        username: username,
+        password: password,
+        salt: salt
     }, (err, user) => {
         if(err) {
             res.status(400);
             res.json(err);
-        } else {
-            console.log(user);
+            } else {
+            console.log(JSON.stringify(user));
             res.status(200);
             res.json(user);
         }
     });
 }
 
-/*
-    res.status(200);
-    //user = new User({ name: "joao", username: "manuel", password: "çlkjalkasdjf"})
-    User.create({ 
-        name: "Joao Pedro",
-        address: "Rua Fulano de Tal, nº 666",
-        username: "joaopedro",
-        password: "lkjasflaksjflaksjf",
-        salt: "slfkjasflkjasf",
-    }, (err, user) => {
-        console.log(user);
-        return res.json(user);
-    });
-*/
+exports.listOne = (req, res) => {
+    const username = req.query.username;
+    User.findOne({ 'username': username }, (err, user) => {
+        if(err){
+            console.log(JSON.stringify(err));
+            res.status(400);
+            res.json(err);
+        } else {
+            if(user){
+                console.log(JSON.stringify(user));
+                res.status(200);
+                res.json(user);
+            } else {
+                res.status(404);
+                res.json();
+            }
 
-module.exports.listOne = () => {};
-module.exports.delete = () => {};
-module.exports.update = () => {};
+        }
+    });
+};
+exports.remove = () => {};
+exports.update = () => {};

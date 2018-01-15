@@ -1,8 +1,4 @@
-const config = {};
+const domain = process.env.DB_DOMAIN || '127.0.0.1';
+const db = process.env.DB_NAME || 'UserAPI';
 
-config.domain = process.env.DB_DOMAIN || '127.0.0.1';
-config.db = process.env.DB_NAME || 'UserAPI';
-
-config.dbURI = 'mongodb://' + config.domain + '/' + config.db;
-
-module.exports = config;
+exports.dbURI = `mongodb://${domain}/${db}`;

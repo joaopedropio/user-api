@@ -1,6 +1,2 @@
-const config = {}
-
-config.domain = process.env.API_DOMAIN || 'localhost';
-config.port = process.env.API_PORT || 3000;
-
-module.exports = config;
+exports.domain = process.env.API_DOMAIN || 'localhost';
+exports.port = process.env.API_PORT || '3000';
