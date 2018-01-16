@@ -6,7 +6,7 @@ node_js:
 services:
   - docker
 
-before_install:
+after_success:
   - docker build -t joaopio/user-api .
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
   - docker push joaopio/user-api
