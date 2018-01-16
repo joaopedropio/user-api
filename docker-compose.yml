@@ -1,0 +1,12 @@
+version: '3'
+services:
+  userapi:
+    image: "joaopio/user-api"
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_DOMAIN=mongo
+  mongo:
+    image: "mongo"
+    volumes:
+      - /volumes/userapi/data:/data/db
