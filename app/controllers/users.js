@@ -31,7 +31,7 @@ exports.create = (req, res) => {
             res.json(user);
         }
     });
-}
+};
 
 exports.listOne = (req, res) => {
     const username = req.query.username;
