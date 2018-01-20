@@ -1,25 +1,22 @@
-const mongoose = require('mongoose');
-const config = require('../../configs/db');
+const connection = require('mongoose').connection;
+const { dbURI } = require('../configs/db');
 let gracefulShutdown;
 
-mongoose.connect(config.dbURI, { useMongoClient: true });
-mongoose.Promise = global.Promise;
-
 // CONNECTION EVENTS
-mongoose.connection.on('connected', function() {
-    console.log('Mongoose connected to ' + config.dbURI);
+connection.on('connected', function() {
+    console.log('Mongoose connected to ' + dbURI);
 });
-mongoose.connection.on('error', function(err) {
+connection.on('error', function(err) {
     console.log('Mongoose connection error: ' + err);
 });
-mongoose.connection.on('disconnected', function() {
+connection.on('disconnected', function() {
     console.log('Mongoose disconnected');
 });
 
 // CAPTURE APP TERMINATION / RESTART EVENTS
 // To be called when process is restarted or terminated
 gracefulShutdown = function(msg, callback) {
-    mongoose.connection.close(function() {
+    connection.close(function() {
         console.log('Mongoose disconnected through ' + msg);
         callback();
     });
@@ -36,5 +33,3 @@ process.on('SIGINT', function() {
         process.exit(0);
     });
 });
-
-require('./users');

@@ -1,7 +1,8 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-require('./app/models/db');
+require('./db/db');
+//require('./app/controllers/users');
 const { port, domain } = require('./configs/app');
 const routes = require('./app/routes/users');
 
