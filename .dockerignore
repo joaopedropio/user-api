@@ -2,5 +2,5 @@ node_modules
 .travis.yml
 .eslintrc.json
 docker-compose.yml
-README.
+README.md
 .vscode
