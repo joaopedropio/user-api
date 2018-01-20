@@ -4,10 +4,12 @@ const bodyParser = require('body-parser');
 require('./db/db');
 //require('./app/controllers/users');
 const { port, domain } = require('./configs/app');
-const routes = require('./app/routes/users');
+const userRoutes = require('./app/routes/users');
+const statusRoutes = require('./app/routes/status');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use('/', routes);
+app.use('/', userRoutes);
+app.use('/', statusRoutes);
 
 app.listen(port, () => console.log(`Listening on http://${domain}:${port}`));
