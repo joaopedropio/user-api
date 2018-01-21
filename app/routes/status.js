@@ -1,8 +1,5 @@
-const express = require('express');
-const router = express.Router();
+const router = require('express').Router();
 
-const status = require('../controllers/status');
-
-router.get('/', status);
+router.get('/', require('../controllers/status'));
 
 module.exports = router;

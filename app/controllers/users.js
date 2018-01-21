@@ -1,57 +1,51 @@
-const mongoose = require('mongoose');
-const User = mongoose.model('User');
+const User = require('mongoose').model('User');
 
 exports.listAll = (req, res) => {
-    res.status(200);
     User.find().lean().exec(function (err, users) {
         console.log(JSON.stringify(users));
-        res.json(users);
+        res.status(200).json(users);
     });
 };
 
 exports.create = (req, res) => {
-    const {
-        name, address, phone, email, username, password, salt
-    } = req.body;
-    User.create({
-        name: name,
-        address: address,
-        phone: phone,
-        email: email,
-        username: username,
-        password: password,
-        salt: salt
-    }, (err, user) => {
+    const user = req.body;
+    User.create(user, (err, user) => {
         if(err) {
-            res.status(400);
-            res.json(err);
-            } else {
+            res.status(400).json(err);
+        } else {
             console.log(JSON.stringify(user));
-            res.status(200);
-            res.json(user);
+            res.status(200).json(user);
         }
     });
 };
 
 exports.listOne = (req, res) => {
-    const username = req.query.username;
+    const username = req.body.username;
     User.findOne({ 'username': username }, (err, user) => {
         if(err){
             console.log(JSON.stringify(err));
-            res.status(400);
-            res.json(err);
+            res.status(400).json(err);
         } else {
             if(user){
                 console.log(JSON.stringify(user));
-                res.status(200);
-                res.json(user);
+                res.status(200).json(user);
             } else {
-                res.status(404);
-                res.json();
+                res.status(404)
             }
-
         }
     });
 };
-exports.remove = () => {};
+
+exports.remove = (req, res) => {
+    const username = req.body.username;
+    User.deleteOne({ 'username': username }, (err, user) => {
+        if(err){
+            console.log(JSON.stringify(err));
+            res.status(400).json(err);
+        } else {
+            res.status(204).json();
+        }
+    });
+};
+
 exports.update = () => {};
