@@ -1,6 +1,5 @@
 const connection = require('mongoose').connection;
 const { dbURI } = require('../configs/db');
-let gracefulShutdown;
 
 connection.on('connected', function() {
     console.log('Mongoose connected to ' + dbURI);
@@ -13,7 +12,5 @@ connection.on('disconnected', function() {
 });
 
 process.on('SIGINT', function() {
-    gracefulShutdown('app termination', function() {
-        process.exit(0);
-    });
+    process.exit(0);
 });
