@@ -3,8 +3,8 @@ const { create, listAll, listOne, remove, update } = require('../controllers/use
 
 router.post('/', create);
 router.get('/', listAll);
-router.get('/:userId', listOne);
-router.put('/:userId', update);
-router.delete('/:userId', remove);
+router.get('/:username', listOne);
+router.put('/:username', update);
+router.delete('/:username', remove);
 
 module.exports = router;

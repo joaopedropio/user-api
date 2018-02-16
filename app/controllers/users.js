@@ -16,8 +16,8 @@ exports.create = (req, res) => {
 };
 
 exports.listOne = (req, res) => {
-    const id = req.params.userId;
-    User.findById(id, (err, user) => {
+    const username = req.params.username;
+    User.findOne({ 'username': username}, (err, user) => {
         if(err){
             res.status(400).json(err);
         } else {
@@ -28,17 +28,17 @@ exports.listOne = (req, res) => {
 };
 
 exports.remove = (req, res) => {
-    const id = req.params.userId;
-    User.findByIdAndRemove(id, (err, user) => {
+    const username = req.params.username;
+    User.findOneAndRemove({ 'username': username }, (err, user) => {
         (err) ? res.status(400).json(err)
               : res.status(204).json(user);
     });
 };
 
 exports.update = (req, res) => {
-    const id = req.params.userId;
+    const username = req.params.username;
     const attributes = req.body;
-    User.findByIdAndUpdate(id, attributes, (err, user) => {
+    User.findOneAndUpdate({ 'username': username }, attributes, (err, user) => {
         (err) ? res.status(400).json(err)
               : res.status(200).json(user);
     })
