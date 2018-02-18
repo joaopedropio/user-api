@@ -8,5 +8,4 @@ router.get('/', listAll);
 router.get('/:username', listOne);
 router.put('/:username', updateOne);
 router.delete('/:username', removeOne);
-
 module.exports = router;

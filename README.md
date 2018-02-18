@@ -47,3 +47,9 @@ docker-compose up
 ```
 
 And you'll have the API running on **[http://locahost:3000/](http://localhost:3000/)**
+
+Environment variables:
+APP_DOMAIN: the domain of this API
+APP_PORT: this API port
+DB_DOMAIN: domain of the mongodb instance
+DB_PORT: mongodb port

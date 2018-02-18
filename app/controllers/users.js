@@ -29,17 +29,15 @@ exports.createOne = (req, res) => {
     });
 };
 
+
 exports.listOne = (req, res) => {
     const username = req.params.username;
-    User.findOne({ 'username': username }, (err, user) => {
+    User.findOne({ 'username': username}, (err, user) => {
         if(err){
             res.status(400).json(err);
         } else {
-            if(user){
-                res.status(200).json(user);
-            } else {
-                res.status(404)
-            }
+            (user) ? res.status(200).json(user)
+                   : res.status(404).json();
         }
     });
 };
@@ -55,4 +53,12 @@ exports.removeOne = (req, res) => {
     });
 };
 
-exports.updateOne = () => {};
+exports.updateOne = (req, res) => {
+    const username = req.params.username;
+    const attributes = req.body;
+    User.findOneAndUpdate({ 'username': username }, attributes, (err, user) => {
+        (err) ? res.status(400).json(err)
+              : res.status(200).json(user);
+    })
+
+};
