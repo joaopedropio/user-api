@@ -4,7 +4,8 @@
     "description": "Api responsible for user data.",
     "main": "app.js",
     "scripts": {
-        "start": "node app.js"
+        "start": "node app.js",
+        "test": "node_modules/.bin/mocha --exit"
     },
     "keywords": [
         "socialmovie",
@@ -25,6 +26,9 @@
         "mongoose": "^4.13.9"
     },
     "devDependencies": {
-        "eslint": "^4.15.0"
+        "chai": "^4.1.2",
+        "chai-http": "^3.0.0",
+        "eslint": "^4.15.0",
+        "mocha": "^5.0.0"
     }
 }

@@ -1,12 +1,12 @@
 const router = require('express').Router();
 
-const { create, listAll, listOne, remove, update
+const { createOne, listAll, listOne, removeOne, updateOne
 } = require('../controllers/users');
 
-router.post('/create', create);
-router.get('/listAll', listAll);
-router.get('/listOne', listOne);
-router.put('/update', update);
-router.delete('/remove', remove);
+router.post('/', createOne);
+router.get('/', listAll);
+router.get('/:username', listOne);
+router.put('/:username', updateOne);
+router.delete('/:username', removeOne);
 
 module.exports = router;
