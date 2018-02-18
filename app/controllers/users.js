@@ -44,7 +44,7 @@ exports.listOne = (req, res) => {
 
 exports.removeOne = (req, res) => {
     const username = req.params.username;
-    User.deleteOne({ 'username': username }, (err, user) => {
+    User.deleteOne({ 'username': username }, (err) => {
         if(err){
             res.status(400).json(err);
         } else {
