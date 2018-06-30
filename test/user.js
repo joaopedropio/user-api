@@ -1,7 +1,6 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const { domain, port } = require('../configs/app');
-const url = `http://${domain}:${port}`;
+const { url } = require('../configs/app');
 
 chai.use(chaiHttp);
 

@@ -1,12 +1,15 @@
 version: '3'
 services:
   userapi:
-    image: "joaopio/user-api"
+    build: .
+    image: user-api
     ports:
-      - "3000:3000"
+      - 3000:3000
+    depends_on:
+      - mongo
     environment:
       - DB_DOMAIN=mongo
   mongo:
-    image: "mongo"
+    image: mongo
     volumes:
-      - /volumes/userapi/data:/data/db
+      - $PWD/data:/data/db
