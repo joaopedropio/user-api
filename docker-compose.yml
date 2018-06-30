@@ -3,13 +3,20 @@ services:
   userapi:
     build: .
     image: user-api
-    ports:
-      - 3000:3000
     depends_on:
       - mongo
     environment:
       - DB_DOMAIN=mongo
+    networks:
+      - socialnetwork
+      - userapinetwork
   mongo:
     image: mongo
     volumes:
       - $PWD/data:/data/db
+    networks:
+      - userapinetwork
+networks:
+  socialnetwork:
+    external: true
+  userapinetwork:
