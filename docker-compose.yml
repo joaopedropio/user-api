@@ -12,8 +12,6 @@ services:
       - userapinetwork
   mongo:
     image: mongo
-    volumes:
-      - $PWD/data:/data/db
     networks:
       - userapinetwork
 networks:
