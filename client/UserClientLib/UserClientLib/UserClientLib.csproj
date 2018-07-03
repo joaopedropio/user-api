@@ -2,6 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+	<PackageId>UserClientLib</PackageId>
+	<Version>1.0.0</Version>
+	<Authors>Joao Pedro Pio</Authors>
+	<Company>Social Movie</Company>
   </PropertyGroup>
 
   <ItemGroup>
