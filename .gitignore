@@ -1,4 +1,7 @@
 node_modules
 npm-debug.log
-.vscode/
-data/*
+.vscode
+bin
+obj
+out
+.vs
