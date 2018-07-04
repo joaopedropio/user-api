@@ -3,19 +3,24 @@ using System;
 using System.Threading.Tasks;
 using UserClientLib;
 
-namespace UserClientLibTest.Client
+namespace UserClientLibTest
 {
     [TestClass]
     public class GetUserTests
     {
-        string userApiUrl = "http://neuromancer.minivps.info:3000/userapi/";
+        UserClient client = new UserClient(Configuration.UserApiUrl);
 
         [TestMethod]
         public async Task Should_ReturnAllUsers_When_GetUserIsCalled()
         {
-            var client = new UserClient(userApiUrl);
             var user = await client.GetUser("joao");
-            Assert.IsInstanceOfType(user, typeof(User));
+            Assert.IsInstanceOfType(user, typeof(UserModel));
+        }
+
+        [TestMethod]
+        public async Task Should_ConfirmPassword_When_PasswordIsValid()
+        {
+            Assert.IsTrue(await client.IsUserPasswordCorrect(Configuration.UserExample1.Username, Configuration.UserExample1Password));
         }
     }
 }
