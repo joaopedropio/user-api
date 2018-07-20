@@ -26,7 +26,6 @@ namespace UserClientLib
             };
         }
 
-
         public async Task<UserModel> GetUser(string username)
         {
             var user = await GetUserWithPassword(username);
