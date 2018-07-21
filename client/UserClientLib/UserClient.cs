@@ -29,6 +29,10 @@ namespace UserClientLib
         public async Task<UserModel> GetUser(string username)
         {
             var user = await GetUserWithPassword(username);
+
+            if (user == null)
+                return null;
+
             return new UserModel(user.Name, user.Email, user.Username, user.Address, user.Phone);
         }
 
@@ -113,6 +117,8 @@ namespace UserClientLib
         public async Task<bool> IsUserPasswordCorrect(string username, string password)
         {
             var user = await GetUserWithPassword(username);
+            if (user == null)
+                return false;
             var hashedPassword = Helper.HashPassword(password, user.Salt);
             return user.Password == hashedPassword;
         }
