@@ -62,7 +62,7 @@ namespace UserClientLib
             }
             else if(httpResponse.StatusCode == HttpStatusCode.NotFound)
             {
-                throw new HttpRequestException("User not found!");
+                return null;
             }
             else
             {
