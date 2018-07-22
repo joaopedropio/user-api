@@ -16,14 +16,9 @@ namespace UserClientLib
 
         public UserClient(string apiUrl)
         {
-            if (apiUrl.EndsWith("/"))
-            {
-                ApiUrl = new Uri(apiUrl.TrimEnd('/'));
-            }
-            httpClient = new HttpClient
-            {
-                BaseAddress = ApiUrl
-            };
+            ApiUrl = new Uri(apiUrl.EndsWith("/") ? apiUrl.TrimEnd('/') : apiUrl);
+
+            httpClient = new HttpClient { BaseAddress = ApiUrl };
         }
 
         public async Task<UserModel> GetUser(string username)
