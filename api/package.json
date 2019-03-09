@@ -21,6 +21,7 @@
     "author": "Joao Pedro",
     "license": "MIT",
     "dependencies": {
+        "bluebird": "^3.5.3",
         "body-parser": "^1.18.2",
         "express": "^4.9.5",
         "mongoose": "^4.13.9",

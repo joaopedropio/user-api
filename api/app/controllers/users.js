@@ -1,22 +1,19 @@
-const User = require('mongoose').model('User');
+const User = require('../domain/userRepository');
 const Password = require('../domain/password');
 
 exports.listAll = (req, res) => {
-    User.find().lean().exec(function (err, users) {
-        if(err){
-            res.status(400).json(err);
-        } else {
-            res.status(200).json(users.map(getResponseUserObject));
-        }
+    User.getAll((err, users) => {
+        (err)? res.status(400).json(err)
+             : res.status(200).json(users.map(User.getResponseObject));
     });
 };
 
 exports.createOne = (req, res) => {
     let user = req.body;
     const { hash, salt } = Password.hashPassword(user.password)
-    user.password = hash;
+    user.hash = hash;
     user.salt = salt;
-    User.create(user, (err, createdUser) => {
+    User.post(user,(err, createdUser) => {
         if(err) {
             switch (err.code) {
                 // Duplicate key error collection
@@ -28,81 +25,75 @@ exports.createOne = (req, res) => {
                     break;
             }
         } else {
-            res.status(201).json(getResponseUserObject(createdUser));
+            res.status(201).json();
         }
-    });
-};
-
-function getUser (username, callback) {
-    return User.findOne({ 'username': username }, callback);
+    })
 };
 
 exports.listOne = (req, res) => {
     const username = req.params.username;
-    getUser(username, (err, user) => {
+    User.get(username, (err, user) => {
         if (err) throw err;
 
-        (user) ? res.status(200).json(getResponseUserObject(user))
+        (user) ? res.status(200).json(User.getResponseObject(user))
                : res.status(404).json();
     });
 };
 
 exports.removeOne = (req, res) => {
     const username = req.params.username;
-    User.deleteOne({ 'username': username }, (err) => {
-        if(err){
-            res.status(400).json(err);
-        } else {
-            res.status(204).json();
-        }
-    });
-};
-
-function putUser(username, attributes, callback) {
-    User.findOneAndUpdate({ 'username': username }, attributes, callback);
+    User.delete(username, (err) => {
+        (err) ? res.status(400).json(err)
+              : res.status(204).json();
+    })
 };
 
 exports.updateOne = (req, res) => {
     const username = req.params.username;
     const attributes = req.body;
-    User.findOneAndUpdate({ 'username': username }, attributes, (err, user) => {
+    User.put(username, attributes, (err, user) => {
         (err) ? res.status(400).json(err)
-              : res.status(200).json(getResponseUserObject(user));
-    });
+              : res.status(201).json();
+    })
 };
 
 exports.changePassword = (req, res) => {
     const username = req.params.username;
     const oldPassword = req.body.oldPassword;
     const newPassword = req.body.newPassword;
-    getUser(username, (err, user) => {
+
+    User.get(username, (err, user) => {
         if(err) throw err;
-        const persistedHash = user.password;
+        if(!user) return res.status(400).json({ error: "User does not exits"});
+
+        const persistedHash = user.hash;
         const providedHash = Password.hashPassword(oldPassword, user.salt);
 
         if(persistedHash == providedHash.hash) {
             const { hash, salt } = Password.hashPassword(newPassword);
-            user.password = hash;
+            user.hash = hash;
             user.salt = salt;
-            putUser(user.username, user, (err, newUser) => {
-                if(err) throw err;
+            User.put(user.username, user, (errr, newUser) => {
+                if(errr) throw errr;
     
-                (newUser) ? res.status(200).json(getResponseUserObject(newUser))
-                          : res.status(400).json("deu algum ruim na hora de guardar o usuario");
+                (newUser) ? res.status(201).json()
+                          : res.status(500).json({ error: "Something went wrong when trying to persist user" });
             });
-    
         } else {
-            res.status(400).json("a senha fornecida é inválida")
+            res.status(401).json({ error: "The password provided is invalid" });
         }
     });
 };
 
-function getResponseUserObject(user) {
-    return {
-        name: user.name,
-        address: user.address,
-        phone: user.phone,
-        email: user.email,
-        username: user.username
-    };
+exports.checkAuthenticity = (req, res) => {
+    const username = req.params.username;
+    const password = req.query.password;
+
+    User.isAuthentic(username, password, (result) => {
+        if (result) {
+            res.status(200).json();
+        } else {
+            res.status(400).json();
+        }
+    });
 };

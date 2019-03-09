@@ -22,7 +22,10 @@
         ],
         "responses": {
           "200": {
-            "description": "successful operation"
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Users"
+            }
           }
         }
       },
@@ -41,30 +44,7 @@
             "name": "user",
             "description": "The component to create.",
             "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "address": {
-                  "type": "string"
-                },
-                "phone": {
-                  "type": "string"
-                },
-                "email": {
-                  "type": "string"
-                },
-                "username": {
-                  "type": "string"
-                },
-                "password": {
-                  "type": "string"
-                },
-                "salt": {
-                  "type": "string"
-                }
-              }
+              "$ref": "#/definitions/UserWithPassword"
             }
           }
         ],
@@ -78,7 +58,7 @@
         }
       }
     },
-    "/users/{userId}": {
+    "/users/{username}": {
       "get": {
         "tags": [
           "user"
@@ -90,7 +70,7 @@
         ],
         "parameters": [
           {
-            "name": "userId",
+            "name": "username",
             "in": "path",
             "description": "fields that need to be updated",
             "required": true,
@@ -99,7 +79,10 @@
         ],
         "responses": {
           "200": {
-            "description": "successful operation"
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
           }
         }
       },
@@ -114,7 +97,7 @@
         ],
         "parameters": [
           {
-            "name": "userId",
+            "name": "username",
             "in": "path",
             "description": "User ID",
             "required": true,
@@ -150,9 +133,9 @@
         ],
         "parameters": [
           {
-            "name": "userId",
+            "name": "username",
             "in": "path",
-            "description": "The userId that needs to be deleted",
+            "description": "The user that needs to be deleted",
             "required": true,
             "type": "string"
           }
@@ -163,13 +146,96 @@
           }
         }
       }
+    },
+    "/users/{username}/changePassword": {
+      "put": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Change User's Password",
+        "operationId": "changePassword",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "description": "The user that needs to change password",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Old and New Passwords",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ChangePassword"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User is updated with new password"
+          },
+          "401": {
+            "description": "The password provided is invalid"
+          },
+          "500": {
+            "description": "Something went wrong when trying to persist user"
+          }
+        }
+      }
+    },
+    "/users/{username}/checkAuthenticity": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Check User's Authenticity",
+        "operationId": "checkAuthenticity",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "username",
+            "description": "The user that needs to change password",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "password",
+            "description": "Old and New Passwords",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User is authentic"
+          },
+          "401": {
+            "description": "User/Password is invalid"
+          }
+        }
+      }
     }
   },
   "definitions": {
     "User": {
       "type": "object",
       "properties": {
+        "username": {
+          "type": "string"
+        },
         "name": {
+          "type": "string"
+        },
+        "email": {
           "type": "string"
         },
         "address": {
@@ -177,17 +243,62 @@
         },
         "phone": {
           "type": "string"
-        },
-        "email": {
+        }
+      }
+    },
+    "Users": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "UserWithPassword": {
+      "type": "object",
+      "properties": {
+        "username": {
           "type": "string"
         },
-        "username": {
+        "name": {
           "type": "string"
         },
         "password": {
           "type": "string"
         },
-        "salt": {
+        "email": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        }
+      }
+    },
+    "ChangePassword": {
+      "type": "object",
+      "properties": {
+        "oldPassword": {
+          "type": "string"
+        },
+        "newPassword": {
           "type": "string"
         }
       }

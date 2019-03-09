@@ -12,9 +12,9 @@ app.use('/', routes)
 
 const { port, url } = require('./configs/app');
 const { dbURL } = require('./configs/db');
-mongoose.connect(dbURL).then(
+mongoose.connect(dbURL, { useMongoClient: true }).then(
     () => {
-        app.listen(port, console.log(`Listening on ${url}...`));
+        app.listen(port, console.log(`Listening on ${url}`));
     },
     err => {
         console.log(err);

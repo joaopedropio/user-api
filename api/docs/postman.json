@@ -1,8 +1,7 @@
 {
 	"info": {
+		"_postman_id": "1acabc03-6c24-49db-837a-5acb8070a038",
 		"name": "User API",
-		"_postman_id": "625033a5-5bea-0d5b-f838-8bb2f1336294",
-		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -11,7 +10,10 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
 					"raw": "http://localhost:3000/users",
 					"protocol": "http",
@@ -22,8 +24,7 @@
 					"path": [
 						"users"
 					]
-				},
-				"description": ""
+				}
 			},
 			"response": []
 		},
@@ -32,7 +33,10 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
 					"raw": "http://localhost:3000",
 					"protocol": "http",
@@ -40,8 +44,7 @@
 						"localhost"
 					],
 					"port": "3000"
-				},
-				"description": ""
+				}
 			},
 			"response": []
 		},
@@ -57,7 +60,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"Joao Pedro\",\n    \"address\": \"Rua Fulano de tal, n 345\",\n    \"phone\": \"12345678\",\n    \"email\": \"joaopedro@email.com\",\n    \"username\": \"joaopedro\",\n    \"password\": \"asdçlkjhasdliuhadsfg\",\n    \"salt\": \"çlhasdflkjahflkjh\"\n}"
+					"raw": "{\n    \"name\": \"Joao Pedro\",\n    \"address\": \"Rua Fulano de tal, n 345\",\n    \"phone\": \"12345678\",\n    \"email\": \"joaopedro@email.com\",\n    \"username\": \"joaopedro\",\n    \"password\": \"1234\"\n}"
 				},
 				"url": {
 					"raw": "http://localhost:3000/users",
@@ -69,8 +72,7 @@
 					"path": [
 						"users"
 					]
-				},
-				"description": ""
+				}
 			},
 			"response": []
 		},
@@ -86,10 +88,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"username\" : \"Manolo\"\t\n}"
+					"raw": "{\n\t\"name\" : \"Manolo\"\t\n}"
 				},
 				"url": {
-					"raw": "http://localhost:3000/users/5a7deb7f30ee3762642e8499",
+					"raw": "http://localhost:3000/users/joaopedro",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -97,10 +99,9 @@
 					"port": "3000",
 					"path": [
 						"users",
-						"5a7deb7f30ee3762642e8499"
+						"joaopedro"
 					]
-				},
-				"description": ""
+				}
 			},
 			"response": []
 		},
@@ -109,9 +110,12 @@
 			"request": {
 				"method": "DELETE",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
-					"raw": "http://localhost:3000/users/5a7dea8ef1c3f350c064073d",
+					"raw": "http://localhost:3000/users/joaopedro",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -119,10 +123,9 @@
 					"port": "3000",
 					"path": [
 						"users",
-						"5a7dea8ef1c3f350c064073d"
+						"joaopedro"
 					]
-				},
-				"description": ""
+				}
 			},
 			"response": []
 		},
@@ -131,9 +134,12 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
-					"raw": "http://localhost:3000/users/5a7deb7f30ee3762642e8499",
+					"raw": "http://localhost:3000/users/joaopedro",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -141,10 +147,67 @@
 					"port": "3000",
 					"path": [
 						"users",
-						"5a7deb7f30ee3762642e8499"
+						"joaopedro"
 					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT Change Password",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"oldPassword\": \"1234\",\n\t\"newPassword\": \"4321\"\n}"
 				},
-				"description": ""
+				"url": {
+					"raw": "http://localhost:3000/users/joaopedro/changePassword",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						"joaopedro",
+						"changePassword"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Check Authenticity",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:3000/users/joaopedro/checkAuthenticity?password=1234",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users",
+						"joaopedro",
+						"checkAuthenticity"
+					],
+					"query": [
+						{
+							"key": "password",
+							"value": "1234"
+						}
+					]
+				}
 			},
 			"response": []
 		}
