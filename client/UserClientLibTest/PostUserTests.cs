@@ -1,7 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using UserClientLib;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -18,7 +15,7 @@ namespace UserClientLibTest
         {
             try
             {
-                await client.PostUser(Configuration.UserExample1, Configuration.UserExample1Password);
+                await client.Post(Configuration.UserExample1, Configuration.UserExample1Password);
             }
             catch (HttpRequestException ex)
             {

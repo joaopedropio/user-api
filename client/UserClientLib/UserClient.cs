@@ -1,65 +1,50 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using System.Net;
-using Newtonsoft.Json.Linq;
 
 namespace UserClientLib
 {
-    public class UserClient
+    public class UserClient : IUserClient
     {
-        public Uri ApiUrl { get; private set; }
+        public Uri ApiUri { get; private set; }
         private HttpClient httpClient;
 
-        public UserClient(string apiUrl)
+        public UserClient(string apiUri)
+            : this(new Uri(apiUri))
         {
-            ApiUrl = new Uri(apiUrl.EndsWith("/") ? apiUrl.TrimEnd('/') : apiUrl);
-
-            httpClient = new HttpClient { BaseAddress = ApiUrl };
         }
 
-        public async Task<UserModel> GetUser(string username)
+        public UserClient(Uri apiUri)
+            : this(apiUri, new HttpClient { BaseAddress = apiUri })
         {
-            var user = await GetUserWithPassword(username);
-
-            if (user == null)
-                return null;
-
-            return new UserModel(user.Name, user.Email, user.Username, user.Address, user.Phone);
         }
 
-
-        private async Task<User> GetUserWithPassword(string username)
+        public UserClient(Uri apiUri, HttpClient httpClient)
         {
-            var getUserUrl = $"{ApiUrl}/users/{username}";
-            var httpResponse = await httpClient.GetAsync(getUserUrl);
+            this.ApiUri = apiUri;
+            this.httpClient = httpClient;
+        }
+
+        public async Task<User> Get(string username)
+        {
+            var httpResponse = await httpClient.GetAsync($"users/{username}");
             var content = await httpResponse.Content.ReadAsStringAsync();
 
+            User user;
             if (httpResponse.IsSuccessStatusCode)
             {
                 try
                 {
-                    var obj = JObject.Parse(content);
-                    var user = new User(
-                        (string)obj.SelectToken("name"),
-                        (string)obj.SelectToken("email"),
-                        (string)obj.SelectToken("username"),
-                        (string)obj.SelectToken("password"),
-                        (string)obj.SelectToken("address"),
-                        (string)obj.SelectToken("phone"),
-                        (string)obj.SelectToken("salt")
-                    );
-                    return user;
+                    user = JsonConvert.DeserializeObject<User>(content);
                 }
                 catch (Exception ex)
                 {
                     throw ex;
                 }
             }
-            else if(httpResponse.StatusCode == HttpStatusCode.NotFound)
+            else if (httpResponse.StatusCode == HttpStatusCode.NotFound)
             {
                 return null;
             }
@@ -67,19 +52,19 @@ namespace UserClientLib
             {
                 throw new HttpRequestException($"Status Code: {httpResponse.StatusCode}");
             }
+
+            return user;
         }
 
-        public async Task PostUser(UserModel userModel, string password)
+        public async Task Post(User user, string password)
         {
-            var postUserUrl = $"{ApiUrl}/users/";
-            var user = new User(userModel, password);
             string userJson;
             
             try
             {
                 userJson = JsonConvert.SerializeObject(user);
                 var content = new StringContent(userJson);
-                var httpResponse = await httpClient.PostAsync(postUserUrl, content);
+                var httpResponse = await httpClient.PostAsync("users/", content);
 
                 if (!httpResponse.IsSuccessStatusCode)
                 {
@@ -92,12 +77,11 @@ namespace UserClientLib
             }
         }
 
-        public async Task DeleteUser(string username)
+        public async Task Delete(string username)
         {
-            var deleteUserUrl = $"{ApiUrl}/users/{username}";
             try
             {
-                var httpResponse = await httpClient.DeleteAsync(deleteUserUrl);
+                var httpResponse = await httpClient.DeleteAsync("users/{username}");
                 if (!httpResponse.IsSuccessStatusCode)
                 {
                     throw new HttpRequestException(($"Status Code: {httpResponse.StatusCode}"));
@@ -109,13 +93,9 @@ namespace UserClientLib
             }
         }
 
-        public async Task<bool> IsUserPasswordCorrect(string username, string password)
+        public Task ChangePassword(string oldPassword, string newPassword)
         {
-            var user = await GetUserWithPassword(username);
-            if (user == null)
-                return false;
-            var hashedPassword = Helper.HashPassword(password, user.Salt);
-            return user.Password == hashedPassword;
+            throw new NotImplementedException();
         }
     }
 }

@@ -17,7 +17,7 @@ namespace UserClientLibTest
         {
             try
             {
-                await client.DeleteUser(Configuration.UserExample1.Username);
+                await client.Delete(Configuration.UserExample1.Username);
             }
             catch (Exception ex)
             {

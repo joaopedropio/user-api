@@ -14,7 +14,7 @@ const { port, url } = require('./configs/app');
 const { dbURL } = require('./configs/db');
 mongoose.connect(dbURL).then(
     () => {
-        app.listen(port, console.log(`Listening on port ${port}...`));
+        app.listen(port, console.log(`Listening on ${url}...`));
     },
     err => {
         console.log(err);
