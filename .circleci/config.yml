@@ -14,5 +14,9 @@ jobs:
           command: cd api && docker-compose -f docker-componse.test.yml up --exit-code-from userapi
       
       - run:
-          name: Build
-          command: cd api && docker build -t "joao-pio/userapi" .
+          name: Publish
+          command: |
+            cd api
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker build -t "joaopio/user-api" .
+            docker push joaopio/user-api:latest
