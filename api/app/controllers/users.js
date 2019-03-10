@@ -1,99 +1,114 @@
 const User = require('../domain/userRepository');
 const Password = require('../domain/password');
 
-exports.listAll = (req, res) => {
-    User.getAll((err, users) => {
-        (err)? res.status(400).json(err)
-             : res.status(200).json(users.map(User.getResponseObject));
-    });
+exports.listAll = async (_, res) => {
+    var users;
+    try {
+        users = await User.getAll();
+        return res.status(200).json(users.map(User.getResponseObject));
+    } catch(error) {
+        return res.status(400).json(error);
+    }
 };
 
-exports.createOne = (req, res) => {
+exports.createOne = async (req, res) => {
     let user = req.body;
-    const { hash, salt } = Password.hashPassword(user.password)
+    const { hash, salt } = await Password.hashPassword(user.password)
     user.hash = hash;
     user.salt = salt;
-    User.post(user,(err, createdUser) => {
-        if(err) {
-            switch (err.code) {
-                // Duplicate key error collection
-                case 11000:
-                    res.status(409).json(err);
-                    break;
-                default:
-                    res.status(400).json(err);
-                    break;
-            }
-        } else {
-            res.status(201).json();
+
+    try {
+        await User.post(user);
+        return res.status(201).json();
+    } catch(error) {
+        switch (error.code) {
+            // Duplicate key error collection
+            case 11000:
+                return res.status(409).json(error);
+            default:
+                return res.status(400).json(error);
         }
-    })
+    };
 };
 
-exports.listOne = (req, res) => {
+exports.listOne = async (req, res) => {
     const username = req.params.username;
-    User.get(username, (err, user) => {
-        if (err) throw err;
+    var user;
+    try {
+        user = await User.get(username);
+    } catch(error) {
+        throw error;
+    };
 
-        (user) ? res.status(200).json(User.getResponseObject(user))
-               : res.status(404).json();
-    });
+    (user) ? res.status(200).json(User.getResponseObject(user))
+           : res.status(404).json();
 };
 
-exports.removeOne = (req, res) => {
+exports.removeOne = async (req, res) => {
     const username = req.params.username;
-    User.delete(username, (err) => {
-        (err) ? res.status(400).json(err)
-              : res.status(204).json();
-    })
+    try {
+        await User.delete(username);
+        return res.status(204).json();
+    } catch(error) {
+        return res.status(400).json(error);
+    };
 };
 
-exports.updateOne = (req, res) => {
+exports.updateOne = async (req, res) => {
     const username = req.params.username;
     const attributes = req.body;
-    User.put(username, attributes, (err, user) => {
-        (err) ? res.status(400).json(err)
-              : res.status(201).json();
-    })
+    try {
+        await User.put(username, attributes);
+        return res.status(201).json();
+    } catch(error) {
+        return res.status(400).json(err);
+    }
 };
 
-exports.changePassword = (req, res) => {
+exports.changePassword = async (req, res) => {
     const username = req.params.username;
     const oldPassword = req.body.oldPassword;
     const newPassword = req.body.newPassword;
 
-    User.get(username, (err, user) => {
-        if(err) throw err;
-        if(!user) return res.status(400).json({ error: "User does not exits"});
+    let user = await User.get(username);
+    if(!user) return res.status(400).json({ error: "User does not exist"});
 
-        const persistedHash = user.hash;
-        const providedHash = Password.hashPassword(oldPassword, user.salt);
+    var isAuthentic;
+    try {
+        isAuthentic = await User.isAuthentic(user, oldPassword)
+    } catch (error) {
+        return res.status(500).json(error);
+    }
 
-        if(persistedHash == providedHash.hash) {
-            const { hash, salt } = Password.hashPassword(newPassword);
-            user.hash = hash;
-            user.salt = salt;
-            User.put(user.username, user, (errr, newUser) => {
-                if(errr) throw errr;
-    
-                (newUser) ? res.status(201).json()
-                          : res.status(500).json({ error: "Something went wrong when trying to persist user" });
-            });
-        } else {
-            res.status(401).json({ error: "The password provided is invalid" });
+    if(isAuthentic) {
+        var userWithNewPassword = await User.changePassword(user, newPassword);
+
+        try {
+            await User.put(username, userWithNewPassword);
+            return res.status(201).json()
+        } catch(error) {
+            return res.status(500).json(error);
         }
-    });
+    } else {
+        return res.status(401).json({ error: "The password provided is invalid" });
+    }
 };
 
-exports.checkAuthenticity = (req, res) => {
+exports.checkAuthenticity = async (req, res) => {
     const username = req.params.username;
     const password = req.query.password;
 
-    User.isAuthentic(username, password, (result) => {
-        if (result) {
-            res.status(200).json();
-        } else {
-            res.status(400).json();
-        }
-    });
+    let user = await User.get(username);
+    if(!user) return res.status(204).json({ error: "User does not exist"});
+
+    var result;
+    try {
+        result = await User.isAuthentic(user, password);
+    } catch(error) {
+        return res.status(500).json(error);
+    }
+
+    (result)
+        ? res.status(200).json()
+        : res.status(400).json();
 };

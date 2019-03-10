@@ -1,24 +1,44 @@
 const User = require('mongoose').model('User');
 const Password = require('../domain/password');
 
-exports.getAll = (callback) => {
-    User.find().lean().exec(callback);
+exports.getAll = async () => {
+    try {
+        return await User.find().lean().exec();
+    } catch (error) {
+        throw error;
+    };
 };
 
-exports.get = (username, callback) => {
-    return User.findOne({ 'username': username }, callback);
+exports.get = async (username) => {
+    try {
+        return  await User.findOne({ 'username': username }).exec();
+    } catch(error) {
+        throw error;
+    };
 };
 
-exports.put = (username, attributes, callback) => {
-    User.findOneAndUpdate({ 'username': username }, attributes, callback);
+exports.put = async (username, attributes) => {
+    try {
+        return await User.findOneAndUpdate({ 'username': username }, attributes).exec();
+    } catch(error) {
+        throw error;
+    };
 };
 
-exports.post = (user, callback) => {
-    User.create(user, callback);
+exports.post = async (user) => {
+    try {
+        await User.create(user);
+    } catch(error) {
+        throw error;
+    };
 };
 
-exports.delete = (username, callback) => {
-    User.deleteOne({ 'username': username }, callback);
+exports.delete = async (username) => {
+    try {
+        await User.deleteOne({ 'username': username });
+    } catch (error) {
+        throw error;
+    };
 };
 
 exports.getResponseObject = (user) => {
@@ -31,14 +51,17 @@ exports.getResponseObject = (user) => {
     };
 };
 
-exports.isAuthentic = (username, password, callback) => {
-    exports.get(username, (err, user) => {
-        if(err) throw err;
-        if(!user) return false;
-        
-        const persistedHash = user.hash;
-        const providedHash = Password.hashPassword(password, user.salt);
+exports.isAuthentic = async (user, password) => {    
+    const persistedHash = user.hash;
+    const providedHash = (await Password.hashPassword(password, user.salt)).hash;
 
-        callback(persistedHash == providedHash.hash);
-    });
+    return persistedHash == providedHash;
+};
+
+exports.changePassword = async (user, newPassword) => {
+    const { hash, salt } = await Password.hashPassword(newPassword);
+    user.hash = hash;
+    user.salt = salt;
+
+    return user;
 };
