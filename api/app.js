@@ -21,3 +21,5 @@ mongoose.connect(dbURL, { useMongoClient: true }).then(
         process.exit();
     }
 );
+
+module.exports = app;

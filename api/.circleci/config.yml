@@ -1,0 +1,17 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: docker:18.06.3-ce
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+
+      - run:
+          name: Tests
+          command: docker-compose -f docker-componse.test.yml up --exit-code-from userapi
+      
+      - run:
+          name: Build
+          command: docker build -t "joao-pio/userapi" .

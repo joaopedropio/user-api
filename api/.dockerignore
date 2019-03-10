@@ -4,3 +4,5 @@ node_modules
 docker-compose.yml
 README.md
 .vscode
+package-lock.json
+.circleci

@@ -46,6 +46,9 @@ exports.listOne = async (req, res) => {
 
 exports.removeOne = async (req, res) => {
     const username = req.params.username;
+    const user = await User.get(username);
+    if(!user) return res.status(404).json({ error: "User does not exist"});
+
     try {
         await User.delete(username);
         return res.status(204).json();
@@ -61,7 +64,7 @@ exports.updateOne = async (req, res) => {
         await User.put(username, attributes);
         return res.status(201).json();
     } catch(error) {
-        return res.status(400).json(err);
+        return res.status(400).json(error);
     }
 };
 
@@ -71,7 +74,7 @@ exports.changePassword = async (req, res) => {
     const newPassword = req.body.newPassword;
 
     let user = await User.get(username);
-    if(!user) return res.status(400).json({ error: "User does not exist"});
+    if(!user) return res.status(404).json({ error: "User does not exist"});
 
     var isAuthentic;
     try {
