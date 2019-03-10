@@ -40,7 +40,7 @@ exports.listOne = async (req, res) => {
         throw error;
     };
 
-    (user) ? res.status(200).json(User.getResponseObject(user))
+    (user) ? res.status(200).json(User.getResponseObjectWithAvatar(user))
            : res.status(404).json();
 };
 

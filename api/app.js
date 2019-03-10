@@ -4,14 +4,13 @@ require('./app/models/users');
 const swaggerUi = require('swagger-ui-express');
 const bodyParser = require('body-parser');
 const routes = require('./app/routes');
+const { jsonLimitSize, port, url, dbURL } = require('./configs/app');
 
 app.use(swaggerUi.serve);
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use('/', routes)
+app.use(bodyParser.json({limit: jsonLimitSize, extended: true}));
+app.use(bodyParser.urlencoded({extended: false}));
+app.use('/', routes);
 
-const { port, url } = require('./configs/app');
-const { dbURL } = require('./configs/db');
 mongoose.connect(dbURL, { useMongoClient: true }).then(
     () => {
         app.listen(port, console.log(`Listening on ${url}`));
