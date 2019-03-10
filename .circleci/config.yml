@@ -3,7 +3,7 @@ jobs:
   build:
     docker:
       - image: tmaier/docker-compose
-
+    working_directory: ~/my-app
     steps:
       - checkout
       - setup_remote_docker:
@@ -15,4 +15,4 @@ jobs:
       
       - run:
           name: Build
-          command: docker build -t "joao-pio/userapi" .
+          command: cd api && docker build -t "joao-pio/userapi" .
