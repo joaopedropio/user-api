@@ -3,9 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
 	<PackageId>UserClientLib</PackageId>
-	<Version>1.4.1</Version>
+	<Version>1.5.0</Version>
 	<Authors>Joao Pedro Pio</Authors>
 	<Company>Social Movie</Company>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
