@@ -2,7 +2,7 @@
 
 namespace UserClientLib
 {
-    public class UserJsonModel
+    internal class UserModel
     {
         [JsonProperty("name")]
         public string Name { get; set; }
@@ -22,8 +22,11 @@ namespace UserClientLib
         [JsonProperty("password")]
         public string Password { get; set; }
 
+        [JsonProperty("avatar")]
+        public string Avatar { get; set; }
+
         [JsonConstructor]
-        public UserJsonModel(string name, string email, string username, string password, string address, string phone)
+        internal UserModel(string name, string email, string username, string password, string address, string phone, string avatar)
         {
             Name = name;
             Address = address;
@@ -31,6 +34,18 @@ namespace UserClientLib
             Email = email;
             Username = username;
             Password = password;
+            Avatar = avatar;
+        }
+
+        internal UserModel(User user, string password)
+        {
+            Name = user.Name;
+            Address = user.Address;
+            Phone = user.Phone;
+            Email = user.Email;
+            Username = user.Username;
+            Password = password;
+            Avatar = user.Avatar;
         }
     }
 }

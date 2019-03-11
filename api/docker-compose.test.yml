@@ -9,7 +9,6 @@ services:
       - mongo
     environment:
       - DB_DOMAIN=mongo
-      - API_PORT=80
     networks:
       - userapinetwork
   mongo:

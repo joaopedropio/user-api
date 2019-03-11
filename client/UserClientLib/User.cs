@@ -12,13 +12,16 @@
 
         public string Username { get; set; }
 
-        public User(string name, string email, string username, string address, string phone)
+        public string Avatar { get; set; }
+
+        public User(string name, string email, string username, string address, string phone, string avatar)
         {
             Name = name;
             Address = address;
             Phone = phone;
             Email = email;
             Username = username;
+            Avatar = avatar;
         }
     }
 }

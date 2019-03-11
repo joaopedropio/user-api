@@ -58,44 +58,49 @@ namespace UserClientLib
 
         public async Task Post(User user, string password)
         {
-            string userJson;
-            
-            try
-            {
-                userJson = JsonConvert.SerializeObject(user);
-                var content = new StringContent(userJson);
-                var httpResponse = await httpClient.PostAsync("users/", content);
+            var userModel = new UserModel(user, password);
+            var content = CreateContent(userModel);
+            var httpResponse = await httpClient.PostAsync("users/", content);
 
-                if (!httpResponse.IsSuccessStatusCode)
-                {
-                    throw new HttpRequestException(($"Status Code: {httpResponse.StatusCode}"));
-                }
-            }
-            catch (Exception ex)
+            if (!httpResponse.IsSuccessStatusCode)
             {
-                throw ex;
+                throw new HttpRequestException(($"Status Code: {httpResponse.StatusCode}"));
             }
         }
 
         public async Task Delete(string username)
         {
-            try
+            var httpResponse = await httpClient.DeleteAsync($"users/{username}");
+            if (!httpResponse.IsSuccessStatusCode)
             {
-                var httpResponse = await httpClient.DeleteAsync("users/{username}");
-                if (!httpResponse.IsSuccessStatusCode)
-                {
-                    throw new HttpRequestException(($"Status Code: {httpResponse.StatusCode}"));
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                throw new HttpRequestException(($"Status Code: {httpResponse.StatusCode}"));
             }
         }
 
-        public Task ChangePassword(string oldPassword, string newPassword)
+        public async Task ChangePassword(string username, string oldPassword, string newPassword)
         {
-            throw new NotImplementedException();
+            var content = CreateContent(new { oldPassword, newPassword });
+
+            var httpResponse = await httpClient.PutAsync($"users/{username}/changePassword", content);
+            if (!httpResponse.IsSuccessStatusCode)
+            {
+                var body = await httpResponse.Content.ReadAsStringAsync();
+                throw new HttpRequestException(($"Status Code: {httpResponse.StatusCode}\nContent: {body}"));
+            }
+        }
+
+        public async Task<bool> IsAuthentic(string username, string password)
+        {
+            var httpResponse = await httpClient.GetAsync($"users/{username}/checkAuthenticity?password={password}");
+            return httpResponse.IsSuccessStatusCode;
+        }
+
+        private StringContent CreateContent(object obj)
+        {
+            var json = JsonConvert.SerializeObject(obj);
+            var content = new StringContent(json);
+            content.Headers.ContentType.MediaType = "application/json";
+            return content;
         }
     }
 }
